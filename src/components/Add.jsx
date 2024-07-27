@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, FloatingLabel, Form, Modal } from 'react-bootstrap';
+import { uploadVideoAPI } from '../services/allAPI';
 
 
 
@@ -14,6 +15,37 @@ function Add() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const addYT=(e)=>{
+    const{value}=e.target
+    if(value.includes("v=")){
+      let vID=value.split('v=')[1].slice(0,11)
+      setUploadVids({...uploadVids,link: `https://www.youtube.com/embed/${vID}`})
+    }else{
+      setUploadVids({...uploadVids,link:''})
+  }}
+
+  const handleUpload= async()=>{
+    const {id,caption,url,link}=uploadVids
+    if(!id || !caption || !url || !link){
+      alert("Please input all the fields");
+    }else{
+      const result=uploadVideoAPI(uploadVids)
+      console.log(result);
+      if(result.status >=200 && result.status<=300){
+        handleClose();
+
+        setUploadVids({
+          id:"",caption:"",url:"",link:""
+        })
+      }else{
+        result.message
+      }
+    }
+  }
+
+  
+  // https://www.youtube.com/watch?v=0bVFEOb39vk
   return (
 
     <>
@@ -41,10 +73,10 @@ function Add() {
 
       <FloatingLabel
         controlId="floatingInput"
-        label="Video url"
+        label="Video caption"
         className="mb-3"
       >
-        <Form.Control type="id" placeholder="video id" />
+        <Form.Control type="id" placeholder="video id" onChange={e=>setUploadVids({...uploadVids,caption:e.target.value})} />
       </FloatingLabel>
 
       <FloatingLabel
@@ -52,7 +84,7 @@ function Add() {
         label="image url"
         className="mb-3"
       >
-        <Form.Control type="id" placeholder="video id" />
+        <Form.Control type="id" placeholder="video id" onChange={e=>setUploadVids({...uploadVids,url:e.target.value})}  />
       </FloatingLabel>
 
       <FloatingLabel
@@ -60,7 +92,7 @@ function Add() {
         label="video url"
         className="mb-3"
       >
-        <Form.Control type="id" placeholder="video id" />
+        <Form.Control type="id" placeholder="video id" onChange={addYT}  />
       </FloatingLabel>
       
       
@@ -70,7 +102,7 @@ function Add() {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary">Upload</Button>
+          <Button variant="primary" onClick={handleUpload}>Upload</Button>
         </Modal.Footer>
       </Modal>
 

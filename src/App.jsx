@@ -6,7 +6,6 @@ import Landing from './pages/Landing'
 import Home from './pages/Home'
 import WatchHistory from './pages/WatchHistory'
 import Category from './components/Category'
-import VideoCard from './components/VideoCard'
 import View from './components/View'
 
 
